@@ -114,14 +114,17 @@
     <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.1.2/dist/js/datepicker-full.min.js"></script>
     <script src="https://unpkg.com/notie"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="../static/js/app.js"></script>
 
     {{block "js" .}}
 
     {{ end }}
 
     <script>
-      ;(function () {
-        'use strict'
+      let attention = Prompt();
+
+      (function () {
+        'use strict';
         window.addEventListener(
           'load',
           function () {
@@ -147,10 +150,8 @@
           },
           false
         )
-      })()
-
-      let attention = Prompt()
-
+      })();
+      
       function notify(msg, msgType) {
         notie.alert({
           type: msgType,
@@ -163,7 +164,7 @@
           title: title,
           html: text,
           icon: icon,
-          confirmButtonText: confirmationButtonText,
+          confirmButtonText: confirmationButtonText
         })
       }
 
@@ -178,95 +179,7 @@
       {{with .Warning}}
       notify("{{.}}", "warning")
       {{end}}
-
-      function Prompt() {
-        let toast = function (c) {
-          const { msg = '', icon = 'success', position = 'top-end' } = c
-          const Toast = Swal.mixin({
-            toast: true,
-            title: msg,
-            position: position,
-            icon: icon,
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.addEventListener('mouseenter', Swal.stopTimer)
-              toast.addEventListener('mouseleave', Swal.resumeTimer)
-            },
-          })
-
-          Toast.fire({})
-        }
-
-        let success = function (c) {
-          const { msg = '', title = '', footer = '' } = c
-          Swal.fire({
-            icon: 'success',
-            title: title,
-            text: msg,
-            footer: footer,
-          })
-        }
-
-        let error = function (c) {
-          const { msg = '', title = '', footer = '' } = c
-          Swal.fire({
-            icon: 'error',
-            title: title,
-            text: msg,
-            footer: footer,
-          })
-        }
-
-        async function custom(c) {
-          const { msg = '', title = '' } = c
-
-          const { value: result } = await Swal.fire({
-            title: title,
-            html: msg,
-            backdrop: false,
-            focusConfirm: false,
-            showCancelButton: true,
-            willOpen: () => {
-              if (c.willOpen !== undefined) {
-                c.willOpen()
-              }
-            },
-            preConfirm: () => {
-              return [
-                document.getElementById('start').value,
-                document.getElementById('end').value,
-              ]
-            },
-            didOpen: () => {
-              if (c.didOpen !== undefined) {
-                c.didOpen()
-              }
-            },
-          })
-          if (result) {
-            if (result.dismiss !== Swal.DismissReason.cancel) {
-              if (result.value !== '') {
-                if (c.callback !== undefined) {
-                  c.callback(result)
-                }
-              } else {
-                c.callback(false)
-              }
-            } else {
-              c.callback(false)
-            }
-          }
-        }
-
-        return {
-          toast: toast,
-          success: success,
-          error: error,
-          custom: custom,
-        }
-      }
+      
     </script>
   </body>
 </html>
